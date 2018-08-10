@@ -336,6 +336,21 @@ Usage:
 
 Returns the number of processes run
 
+=head2 run_proccesses
+
+Runs all the processes steps supplied. All processes
+are given the context to be built.
+
+Usage:
+
+ # No context given:
+ $this->run_proccesses({},@processes);
+
+ # With 'thing' as context:
+ $this->run_proccesses({ thing => ... },@processes);
+
+Returns the number of processes run
+
 =head2 instantiate_process
 
 Instantiate a stored process from the given process class returns a new process that will have an ID.
@@ -426,6 +441,11 @@ sub run_due_processes{
     $context ||= {};
 
     my @stored_processes = $self->storage->prepare_due_processes();
+    return $self->run_proccesses($context, @stored_processes);
+}
+
+sub run_proccesses{
+    my ($self, $context, @stored_processes) = @_;
     my $process_count = 0;
     foreach  my $stored_process ( @stored_processes ){
         my $process_method = $stored_process->what();
